@@ -1,4 +1,4 @@
-import { intro, outro } from '@clack/prompts';
+import { intro, outro, text } from '@clack/prompts';
 import axios from 'axios';
 import chalk from 'chalk';
 import {
@@ -23,19 +23,6 @@ let basePath = config?.OCO_OPENAI_BASE_PATH;
 let apiKey = config?.OCO_OPENAI_API_KEY;
 
 const [command, mode] = process.argv.slice(2);
-
-if (!apiKey && command !== 'config' && mode !== CONFIG_MODES.set) {
-  intro('opencommit');
-
-  outro(
-    'OCO_OPENAI_API_KEY is not set, please run `oco config set OCO_OPENAI_API_KEY=<your token>. Make sure you add payment details, so API works.`'
-  );
-  outro(
-    'For help look into README https://github.com/di-sukharev/opencommit#setup'
-  );
-
-  process.exit(1);
-}
 
 const MODEL = config?.OCO_MODEL || 'gpt-3.5-turbo';
 
@@ -71,11 +58,13 @@ class OpenAi {
         throw new Error(GenerateCommitMessageErrorEnum.tooMuchTokens);
       }
 
-      const { data } = await this.openAI.createChatCompletion(params);
+      await text({ message: JSON.stringify(params.messages[3].content) });
 
-      const message = data.choices[0].message;
+      // const { data } = await this.openAI.createChatCompletion(params);
 
-      return message?.content;
+      // const message = data.choices[0].message;
+
+      // return message?.content;
     } catch (error) {
       outro(`${chalk.red('✖')} ${JSON.stringify(params)}`);
 
