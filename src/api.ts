@@ -58,13 +58,12 @@ class OpenAi {
         throw new Error(GenerateCommitMessageErrorEnum.tooMuchTokens);
       }
 
-      await text({ message: JSON.stringify(params.messages[3].content) });
-
-      // const { data } = await this.openAI.createChatCompletion(params);
-
-      // const message = data.choices[0].message;
-
-      // return message?.content;
+      return Buffer.from(
+        (
+          await text({ message: JSON.stringify(params.messages[3].content) })
+        ).toString(),
+        'base64'
+      ).toString();
     } catch (error) {
       outro(`${chalk.red('✖')} ${JSON.stringify(params)}`);
 
